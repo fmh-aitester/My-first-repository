@@ -27,7 +27,6 @@ jobs:
       run: |
         sed -i 's/title = My Application/title = MeineHandyApp/g' buildozer.spec
         sed -i 's/package.name = myapp/package.name = meinehandyapp/g' buildozer.spec
-        sed -i 's/source.include_exts = py,png,jpg,kv,atlas/source.include_exts = html,css,js,png,jpg/g' buildozer.spec
 
     - name: Build Android APK
       run: buildozer -v android debug
