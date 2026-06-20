@@ -1,39 +1,17 @@
-name: Build Android APK
-on: [push, workflow_dispatch]
-
+name: Deploy Web App
+on: [push]
 jobs:
-  build:
-    runs-on: ubuntu-22.04
+  deploy:
+    runs-on: ubuntu-latest
     steps:
     - name: Checkout Code
-      uses: actions/checkout@v4.2.2
-
-    - name: Set up Python
-      uses: actions/setup-python@v5.4.0
+      uses: actions/checkout@v4
+    - name: Upload Pages Artifact
+      uses: actions/upload-pages-artifact@v3
       with:
-        python-version: '3.10'
-
-    - name: Install System Dependencies
-      run: |
-        sudo apt-get update
-        sudo apt-get install -y git zip unzip openjdk-17-jdk python3-pip autoconf libtool pkg-config zlib1g-dev libncurses5-dev libssl-dev libffi-dev libgdbm-dev alpine-pico libsqlite3-dev tk-dev uuid-dev libreadline-dev libbz2-dev libffi-dev
-        pip install --upgrade pip
-        pip install "cython<3.0.0" buildozer virtualenv
-
-    - name: Create buildozer.spec
-      run: |
-        buildozer init
-        sed -i 's/title = My Application/title = MeineHandyApp/g' buildozer.spec
-        sed -i 's/package.name = myapp/package.name = meinehandyapp/g' buildozer.spec
-        sed -i 's/#android.accept_sdk_license = False/android.accept_sdk_license = True/g' buildozer.spec
-
-    - name: Build Android APK
-      run: |
-        export BUILDOZER_ALLOW_KIVY_NEW_DESIGNER=1
-        buildozer -v android debug
-
-    - name: Upload APK Artifact
-      uses: actions/upload-artifact@v4.6.0
-      with:
-        name: android-apk
-        path: bin/*.apk
+        path: '.'
+    - name: Deploy to GitHub Pages
+      uses: actions/deploy-pages@v4
+      permissions:
+        pages: write
+        id-token: write
