@@ -1,28 +1,40 @@
-import tkinter as tk
-from tkinter import messagebox
+from kivy.app import App
+from kivy.uix.boxlayout import BoxLayout
+from kivy.uix.label import Label
+from kivy.uix.button import Button
+from kivy.uix.popup import Popup
 
-# Erstellt ein echtes, einfaches App-Fenster
-root = tk.Tk()
-root.title("Meine FOSS App")
-root.geometry("400x600")
-root.configure(bg='#eef2f3')
-
-# Überschrift
-label = tk.Label(root, text="Glückwunsch!", font=("Arial", 24, "bold"), bg='#eef2f3', fg='#333')
-label.pack(pady=40)
-
-# Text
-text = tk.Label(root, text="Ihre erste eigene App läuft.", font=("Arial", 14), bg='#eef2f3', fg='#666')
-text.pack(pady=10)
-
-# Funktion für den Button
-def zeige_hinweis():
-    messagebox.showinfo("Erfolg", "Perfekt, der Code funktioniert!")
-
-# Grüner Button
-btn = tk.Button(root, text="Hier tippen", font=("Arial", 14, "bold"), bg='#28a745', fg='white', 
-                padx=20, pady=10, borderwidth=0, command=zeige_hinweis)
-btn.pack(pady=40)
+class MeineApp(App):
+    def build(self):
+        # Das Hauptlayout der App (vertikal geordnet)
+        layout = BoxLayout(orientation='vertical', padding=20, spacing=20)
+        
+        # Überschrift und Text
+        title = Label(text="Glückwunsch!", font_size='32sp', bold=True, size_hint_y=0.2)
+        subtitle = Label(text="Ihre erste FOSS-App läuft.", font_size='18sp', size_hint_y=0.4)
+        
+        # Der grüne Klick-Button
+        btn = Button(text="Hier tippen", font_size='20sp', bold=True, size_hint_y=0.2,
+                     background_normal='', background_color=(0.15, 0.65, 0.27, 1)) # Grün
+        
+        # Funktion für das Pop-up Fenster bei Klick
+        def zeige_popup(instance):
+            popup_layout = BoxLayout(orientation='vertical', padding=10)
+            popup_layout.add(Label(text="Perfekt, der Code funktioniert!"))
+            close_btn = Button(text="Schliessen", size_hint_y=0.4)
+            popup = Popup(title="Erfolg!", content=popup_layout, size_hint=(0.8, 0.4))
+            close_btn.bind(on_release=popup.dismiss)
+            popup_layout.add(close_btn)
+            popup.open()
+            
+        btn.bind(on_release=zeige_popup)
+        
+        # Alles dem Layout hinzufügen
+        layout.add(title)
+        layout.add(subtitle)
+        layout.add(btn)
+        
+        return layout
 
 if __name__ == '__main__':
-    root.mainloop()
+    MeineApp().run()
