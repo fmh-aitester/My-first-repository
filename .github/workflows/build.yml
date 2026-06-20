@@ -6,34 +6,16 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - name: Checkout Code
-      uses: actions/checkout@v4
+      uses: actions/checkout@v4.2.2
 
-    - name: Set up Python
-      uses: actions/setup-python@v5
+    - name: Build APK mit Buildozer
+      uses: ArtemSBulgakov/buildozer-action@v1
       with:
-        python-version: '3.10'
+        workdir: .
+        buildozer_version: stable
 
-    - name: Install Buildozer and Dependencies
-      run: |
-        sudo apt-get update
-        sudo apt-get install -y git zip unzip openjdk-17-jdk python3-pip autoconf libtool pkg-config zlib1g-dev libncurses5-dev libssl-dev libffi-dev libgdbm-dev alpine-pico libsqlite3-dev tk-dev uuid-dev libreadline-dev libbz2-dev
-        pip install --upgrade pip
-        pip install "cython<3.0.0" buildozer virtualenv
-
-    - name: Initialize Buildozer
-      run: buildozer init
-
-    - name: Configure buildozer.spec
-      run: |
-        sed -i 's/title = My Application/title = MeineHandyApp/g' buildozer.spec
-        sed -i 's/package.name = myapp/package.name = meinehandyapp/g' buildozer.spec
-        sed -i 's/requirements = python3,kivy/requirements = python3,kivy==2.3.0/g' buildozer.spec
-
-    - name: Build Android APK
-      run: buildozer -v android debug
-
-    - name: Upload APK Artifact
-      uses: actions/upload-artifact@v4
+    - name: Upload APK Datei
+      uses: actions/upload-artifact@v4.6.0
       with:
         name: android-apk
         path: bin/*.apk
